@@ -9,9 +9,11 @@ from typing import Optional
 from Bot import Bot
 from GameState import GameState
 
-from AIBot import AIBot
-from KinanBot import LocalSearchBot
-from MarchoBot import MarchoBot
+from MinimaxBot import MinimaxBot
+from HillClimbingBot import HillClimbingBot
+from RandomBot import RandomBot
+# from KinanBot import LocalSearchBot
+# from MarchoBot import MarchoBot
 
 size_of_board = 600
 number_of_dots = 4
@@ -309,5 +311,5 @@ class Dots_and_Boxes():
         self.update(action.action_type, action.position)
 
 if __name__ == "__main__":
-    game_instance = Dots_and_Boxes(AIBot(), MarchoBot())
+    game_instance = Dots_and_Boxes(MinimaxBot(), HillClimbingBot())
     game_instance.mainloop()

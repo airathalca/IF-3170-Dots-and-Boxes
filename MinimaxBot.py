@@ -5,7 +5,7 @@ import numpy as np
 from copy import deepcopy
 import random
 
-class AIBot(Bot):
+class MinimaxBot(Bot):
     def __init__(self):
         self.my_turn = True
     # Mengembalikan aksi yang akan dilakukan
@@ -85,6 +85,8 @@ class AIBot(Bot):
                 alpha = max(alpha, maxEval)
                 if beta <= alpha:
                     break
+            return maxEval, best_move
+
         else:
             minEval = np.inf
             best_move = all_moves[0]
@@ -102,8 +104,8 @@ class AIBot(Bot):
                 beta = min(beta, minEval)
                 if beta <= alpha:
                     break
-        return minEval, best_move
-    
+            return minEval, best_move
+
     # Melakukan aksi pada state
     def apply_action(self, state: GameState, action: GameAction):
         if action.action_type == "row":
