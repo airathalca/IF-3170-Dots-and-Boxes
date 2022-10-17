@@ -7,18 +7,18 @@ import random
 import time
 
 class MinimaxBot(Bot):
-    def __init__(self, depth):
+    def __init__(self):
         self.my_turn = True
-        self.depth = depth
 
     # Mengembalikan aksi yang akan dilakukan
     def get_action(self, state: GameState) -> GameAction: 
         self.my_turn = state.player1_turn
         timeout = time.time() + 5
-        for i in range(self.depth):
+        move_possible = np.count_nonzero(state.row_status == 0) + np.count_nonzero(state.col_status == 0)
+        for i in range(1, move_possible):
             if time.time() > timeout:
                 break
-            action = self.alphabeta(state, self.depth, -np.inf, np.inf, True, timeout)[1]
+            action = self.alphabeta(state, i, -np.inf, np.inf, True, timeout)[1]
         return GameAction(action.action_type, (action.position[1], action.position[0]))
     
     # Menghitung jumlah poin yang dimiliki oleh player
