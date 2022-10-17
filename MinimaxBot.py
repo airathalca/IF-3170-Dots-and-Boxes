@@ -9,18 +9,18 @@ import signal
 
 
 class MinimaxBot(Bot):
-    def __init__(self, depth):
+    def __init__(self):
         self.my_turn = True
-        self.depth = depth
 
     # Mengembalikan aksi yang akan dilakukan
     def get_action(self, state: GameState) -> GameAction: 
         self.my_turn = state.player1_turn
+        move_possible = np.count_nonzero(state.row_status == 0) + np.count_nonzero(state.col_status == 0)
         signal.signal(signal.SIGALRM, TimeoutHandler.timeout_handler)
-        for i in range(self.depth):
+        for i in range(1, move_possible):
             signal.alarm(5)
             try:
-                action = self.alphabeta(state, self.depth, -np.inf, np.inf, True)[1]
+                action = self.alphabeta(state, i, -np.inf, np.inf, True)[1]
             except TimeoutHandler:
                 break;
         return GameAction(action.action_type, (action.position[1], action.position[0]))
