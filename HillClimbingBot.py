@@ -4,9 +4,8 @@ from GameState import GameState
 import numpy as np
 from copy import deepcopy
 import random
-import signal
+import time
 
-from TimeoutHandler import TimeoutHandler
 
 class HillClimbingBot(Bot):
     def __init__(self):
@@ -15,23 +14,19 @@ class HillClimbingBot(Bot):
     # Mengembalikan aksi yang akan dilakukan
     def get_action(self, state: GameState) -> GameAction: 
         self.my_turn = state.player1_turn
-        signal.signal(signal.SIGALRM, TimeoutHandler.timeout_handler)
-        while (True):
-            signal.alarm(5)
-            try:
-                all_moves = self.get_all_moves(state)
-                action = all_moves[0]
-                max_score = -100000
-                for move in all_moves:
-                    new_state = self.apply_action(deepcopy(state), move)
-                    score = self.evaluate(new_state)
-                    # hill-climbing with sideway move
-                    if score >= max_score:
-                        max_score = score
-                        action = move
-                break;
-            except TimeoutHandler:
-                break;  
+        all_moves = self.get_all_moves(state)
+        action = all_moves[0]
+        max_score = -100000
+        timeout = time.time() + 5
+        for move in all_moves:
+            if time.time() > timeout:
+                break
+            new_state = self.apply_action(deepcopy(state), move)
+            score = self.evaluate(new_state)
+            # hill-climbing with sideway move
+            if score >= max_score:
+                max_score = score
+                action = move
         return GameAction(action.action_type, (action.position[1], action.position[0]))
     
     # Menghitung jumlah poin yang dimiliki oleh player

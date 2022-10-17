@@ -4,9 +4,7 @@ from GameState import GameState
 import numpy as np
 from copy import deepcopy
 import random
-from TimeoutHandler import TimeoutHandler
-import signal
-
+import time
 
 class MinimaxBot(Bot):
     def __init__(self, depth):
@@ -16,13 +14,11 @@ class MinimaxBot(Bot):
     # Mengembalikan aksi yang akan dilakukan
     def get_action(self, state: GameState) -> GameAction: 
         self.my_turn = state.player1_turn
-        signal.signal(signal.SIGALRM, TimeoutHandler.timeout_handler)
+        timeout = time.time() + 5
         for i in range(self.depth):
-            signal.alarm(5)
-            try:
-                action = self.alphabeta(state, self.depth, -np.inf, np.inf, True)[1]
-            except TimeoutHandler:
-                break;
+            if time.time() > timeout:
+                break
+            action = self.alphabeta(state, self.depth, -np.inf, np.inf, True, timeout)[1]
         return GameAction(action.action_type, (action.position[1], action.position[0]))
     
     # Menghitung jumlah poin yang dimiliki oleh player
@@ -75,7 +71,9 @@ class MinimaxBot(Bot):
         return (state.row_status == 1).all() and (state.col_status == 1).all()
 
     # Algoritma minimax dengan alphabeta pruning
-    def alphabeta(self, state: GameState, depth=3, alpha= -np.inf, beta= np.inf, agent_turn=True):
+    def alphabeta(self, state: GameState, depth=3, alpha= -np.inf, beta= np.inf, agent_turn=True, timeout=5):
+        if time.time() > timeout:
+            return self.evaluate(state), None
         if depth == 0 or self.is_game_over(state):
             return self.evaluate(state), None
         all_moves = self.get_all_moves(state)
@@ -87,9 +85,9 @@ class MinimaxBot(Bot):
                 current = deepcopy(state)
                 current = self.apply_action(current, move)
                 if(current.player1_turn == state.player1_turn):
-                    maxEval = max(maxEval, self.alphabeta(current, depth - 1, alpha, beta, agent_turn)[0])
+                    maxEval = max(maxEval, self.alphabeta(current, depth - 1, alpha, beta, agent_turn, timeout)[0])
                 else:
-                    maxEval = max(maxEval, self.alphabeta(current, depth - 1, alpha, beta, not agent_turn)[0])
+                    maxEval = max(maxEval, self.alphabeta(current, depth - 1, alpha, beta, not agent_turn, timeout)[0])
                 if (maxEval > best_score):
                     best_score = maxEval
                     best_move = move
@@ -106,9 +104,9 @@ class MinimaxBot(Bot):
                 current = deepcopy(state)
                 current = self.apply_action(current, move)
                 if(current.player1_turn == state.player1_turn):
-                    minEval = min(minEval, self.alphabeta(current, depth - 1, alpha, beta, agent_turn)[0])
+                    minEval = min(minEval, self.alphabeta(current, depth - 1, alpha, beta, agent_turn, timeout)[0])
                 else:
-                    minEval = min(minEval, self.alphabeta(current, depth - 1, alpha, beta, not agent_turn)[0])
+                    minEval = min(minEval, self.alphabeta(current, depth - 1, alpha, beta, not agent_turn, timeout)[0])
                 if (minEval < best_score):
                     best_score = minEval
                     best_move = move
