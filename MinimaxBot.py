@@ -9,17 +9,21 @@ import time
 class MinimaxBot(Bot):
     def __init__(self):
         self.my_turn = True
+        self.hit_timeout = False #cek apakah sudah melewati batas waktu
+        self.action = None #action yang bakal dijalanin
 
     # Mengembalikan aksi yang akan dilakukan
-    def get_action(self, state: GameState) -> GameAction: 
+    def get_action(self, state: GameState) -> GameAction:
         self.my_turn = state.player1_turn
-        timeout = time.time() + 5
+        timeout = time.time() + 4.5
         move_possible = np.count_nonzero(state.row_status == 0) + np.count_nonzero(state.col_status == 0)
-        for i in range(1, move_possible):
+        for i in range(1, min(5,move_possible) + 1):
             if time.time() > timeout:
                 break
-            action = self.alphabeta(state, i, -np.inf, np.inf, True, timeout)[1]
-        return GameAction(action.action_type, (action.position[1], action.position[0]))
+            temp_action = self.alphabeta(state, i, -np.inf, np.inf, True, timeout)[1]
+            if(self.hit_timeout == False and temp_action != None): #action cuma diubah kalo gak melewati batas waktu (kalau lewat kita pake iterasi sebelumnya)
+                self.action = temp_action
+        return GameAction(self.action.action_type, (self.action.position[1], self.action.position[0]))
     
     # Menghitung jumlah poin yang dimiliki oleh player
     def count_point(self, state: GameState, player1: bool) -> int: 
@@ -73,6 +77,7 @@ class MinimaxBot(Bot):
     # Algoritma minimax dengan alphabeta pruning
     def alphabeta(self, state: GameState, depth=3, alpha= -np.inf, beta= np.inf, agent_turn=True, timeout=5):
         if time.time() > timeout:
+            self.hit_timeout = True
             return self.evaluate(state), None
         if depth == 0 or self.is_game_over(state):
             return self.evaluate(state), None
