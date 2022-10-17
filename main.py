@@ -67,7 +67,10 @@ class Dots_and_Boxes():
         self.turn()
 
     def mainloop(self):
-        self.window.mainloop()
+        try:
+            self.window.mainloop()
+        except:
+            game_instance.mainloop()
 
     # ------------------------------------------------------------------
     # Logical Functions:
