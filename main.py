@@ -311,5 +311,5 @@ class Dots_and_Boxes():
         self.update(action.action_type, action.position)
 
 if __name__ == "__main__":
-    game_instance = Dots_and_Boxes(MinimaxBot(), HillClimbingBot())
+    game_instance = Dots_and_Boxes(MinimaxBot(number_of_dots - 1), HillClimbingBot())
     game_instance.mainloop()

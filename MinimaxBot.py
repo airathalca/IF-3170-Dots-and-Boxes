@@ -4,14 +4,25 @@ from GameState import GameState
 import numpy as np
 from copy import deepcopy
 import random
+from TimeoutHandler import TimeoutHandler
+import signal
+
 
 class MinimaxBot(Bot):
-    def __init__(self):
+    def __init__(self, depth):
         self.my_turn = True
+        self.depth = depth
+
     # Mengembalikan aksi yang akan dilakukan
     def get_action(self, state: GameState) -> GameAction: 
         self.my_turn = state.player1_turn
-        action = self.alphabeta(state,3, -np.inf, np.inf, True)[1]
+        signal.signal(signal.SIGALRM, TimeoutHandler.timeout_handler)
+        for i in range(self.depth):
+            signal.alarm(5)
+            try:
+                action = self.alphabeta(state, self.depth, -np.inf, np.inf, True)[1]
+            except TimeoutHandler:
+                break;
         return GameAction(action.action_type, (action.position[1], action.position[0]))
     
     # Menghitung jumlah poin yang dimiliki oleh player
