@@ -12,8 +12,7 @@ from GameState import GameState
 from MinimaxBot import MinimaxBot
 from HillClimbingBot import HillClimbingBot
 from RandomBot import RandomBot
-# from KinanBot import LocalSearchBot
-# from MarchoBot import MarchoBot
+
 
 size_of_board = 600
 number_of_dots = 4
