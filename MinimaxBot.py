@@ -1,4 +1,3 @@
-from tkinter import ANCHOR
 from Bot import Bot
 from GameAction import GameAction
 from GameState import GameState
@@ -18,7 +17,7 @@ class MinimaxBot(Bot):
         self.my_turn = state.player1_turn
         timeout = time.time() + 4.5
         move_possible = np.count_nonzero(state.row_status == 0) + np.count_nonzero(state.col_status == 0)
-        #ANCHOR -  ini bisa diubah mau gimana ids nya, apa ada maks iterasi atau engga (langsung range(1,move_possible+1))
+        #REVIEW - ini bisa diubah y yg rangenya
         for i in range(1, min(5,move_possible) + 1):
             if time.time() > timeout:
                 break
