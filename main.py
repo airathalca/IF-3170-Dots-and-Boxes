@@ -1,14 +1,10 @@
-# Author: aqeelanwar
-# Created: 13 March,2020, 9:19 PM
-# Email: aqeel.anwar@gatech.edu
-# Modified by GaIB 19 Assistants
-
 from tkinter import *
 import numpy as np
 from typing import Optional
 from Bot import Bot
 from GameState import GameState
 
+# * Import your bot
 from MinimaxBot import MinimaxBot
 from HillClimbingBot import HillClimbingBot
 from RandomBot import RandomBot
@@ -66,10 +62,7 @@ class Dots_and_Boxes():
         self.turn()
 
     def mainloop(self):
-        try:
-            self.window.mainloop()
-        except:
-            game_instance.mainloop()
+        self.window.mainloop()
 
     # ------------------------------------------------------------------
     # Logical Functions:
@@ -313,5 +306,11 @@ class Dots_and_Boxes():
         self.update(action.action_type, action.position)
 
 if __name__ == "__main__":
-    game_instance = Dots_and_Boxes(MinimaxBot(), HillClimbingBot())
+    """
+    Change game_instance initialization below to change game mode
+    PvP mode: game_instance = Dots_and_Boxes(None, None)
+    PvB mode: game_instance = Dots_and_Boxes(None, BotName()) or game_instance = Dots_and_Boxes(BotName(), None)
+    BvB mode: game_instance = Dots_and_Boxes(BotName(), BotName())
+    """
+    game_instance = Dots_and_Boxes(None, MinimaxBot())
     game_instance.mainloop()
