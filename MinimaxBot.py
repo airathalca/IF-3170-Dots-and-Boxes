@@ -15,7 +15,7 @@ class MinimaxBot(Bot):
     # Mengembalikan aksi yang akan dilakukan
     def get_action(self, state: GameState) -> GameAction:
         self.my_turn = state.player1_turn
-        timeout = time.time() + 4.5
+        timeout = time.time() + 4.7
         move_possible = np.count_nonzero(state.row_status == 0) + np.count_nonzero(state.col_status == 0)
         #REVIEW - ini bisa diubah y yg rangenya
         for i in range(1, min(5,move_possible) + 1):
