@@ -1,3 +1,4 @@
+from shutil import move
 from Bot import Bot
 from GameAction import GameAction
 from GameState import GameState
@@ -9,20 +10,21 @@ import time
 class MinimaxBot(Bot):
     def __init__(self):
         self.my_turn = True
-        self.hit_timeout = False #cek apakah sudah melewati batas waktu
-        self.action = None #action yang bakal dijalanin
+        self.hit_timeout = False
+        self.action = None
 
     # Mengembalikan aksi yang akan dilakukan
     def get_action(self, state: GameState) -> GameAction:
         self.my_turn = state.player1_turn
+        self.hit_timeout = False
         timeout = time.time() + 4.7
         move_possible = np.count_nonzero(state.row_status == 0) + np.count_nonzero(state.col_status == 0)
         #REVIEW - ini bisa diubah y yg rangenya
-        for i in range(1, min(5,move_possible) + 1):
+        for i in range(1, move_possible + 1):
             if time.time() > timeout:
                 break
             temp_action = self.alphabeta(state, i, -np.inf, np.inf, True, timeout)[1]
-            if(self.hit_timeout == False and temp_action != None): #action cuma diubah kalo gak melewati batas waktu (kalau lewat kita pake iterasi sebelumnya)
+            if(self.hit_timeout == False and temp_action != None):
                 self.action = temp_action
         return GameAction(self.action.action_type, (self.action.position[1], self.action.position[0]))
     
@@ -76,7 +78,7 @@ class MinimaxBot(Bot):
         return (state.row_status == 1).all() and (state.col_status == 1).all()
 
     # Algoritma minimax dengan alphabeta pruning
-    def alphabeta(self, state: GameState, depth=3, alpha= -np.inf, beta= np.inf, agent_turn=True, timeout=5):
+    def alphabeta(self, state: GameState, depth=4, alpha= -np.inf, beta= np.inf, agent_turn=True, timeout=5):
         if time.time() > timeout:
             self.hit_timeout = True
             return self.evaluate(state), None
@@ -100,7 +102,7 @@ class MinimaxBot(Bot):
                 alpha = max(alpha, maxEval)
                 if beta <= alpha:
                     break
-            return maxEval, best_move
+            return best_score, best_move
 
         else:
             minEval = np.inf
@@ -119,7 +121,7 @@ class MinimaxBot(Bot):
                 beta = min(beta, minEval)
                 if beta <= alpha:
                     break
-            return minEval, best_move
+            return best_score, best_move
 
     # Melakukan aksi pada state
     def apply_action(self, state: GameState, action: GameAction):
