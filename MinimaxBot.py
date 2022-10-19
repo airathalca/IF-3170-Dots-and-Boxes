@@ -19,7 +19,6 @@ class MinimaxBot(Bot):
         self.hit_timeout = False
         timeout = time.time() + 4
         move_possible = np.count_nonzero(state.row_status == 0) + np.count_nonzero(state.col_status == 0)
-        #REVIEW - ini bisa diubah y yg rangenya
         for i in range(1, move_possible + 1):
             if time.time() > timeout:
                 break
