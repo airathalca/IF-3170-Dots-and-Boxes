@@ -1,4 +1,3 @@
-from shutil import move
 from Bot import Bot
 from GameAction import GameAction
 from GameState import GameState
